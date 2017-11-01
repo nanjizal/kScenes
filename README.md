@@ -10,12 +10,13 @@ dependancy 'tweenx'.
     sceneDirector.enableKeyControl(); // allows you to use <- keys -> to navigate scenes 
 
     // add Scenes
-    var scene = new Scene( 'home' );
+    var home = new Scene( 'home' );
     var img = new ImageWrapper( Assets.images.MyImage, 100, 100 ); // support for text with variable letter spacing.
     img.offSide = Compass.NORTH_SMALL; // Animates in from slightly to the north and out same way.
-    scene.addImage( img );
+    home.addImage( img );
     // and other scenes
-    sceneDirector.add( scene );
+    sceneDirector.add( home );
+    home.show();
     System.notifyOnRender(render);
     
   }
