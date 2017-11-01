@@ -1,5 +1,6 @@
 # kScenes
 Tool for simplifying Scene transitions in Kha, not yet added button support.
+dependancy 'tweenx'.
 
 ```haxe
   function loadAll(){
