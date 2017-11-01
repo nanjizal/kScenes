@@ -1,0 +1,14 @@
+{
+  "name": "kScenes",
+  "url" :
+      "https://github.com/kScenes",
+  "license": "MIT",
+  "tags": ["kha"],
+  "description":
+      "Tool for simplifying Scene transitions in Kha.",
+  "version": "0.0.1",
+  "contributors": ["Nanjizal"],
+  "dependencies": {
+      "tweenx":""
+  }
+}
