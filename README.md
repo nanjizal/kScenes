@@ -15,7 +15,8 @@ You can use it like this:
     var img = new ImageWrapper( Assets.images.MyImage, 100, 100 ); // support for text with variable letter spacing.
     img.offSide = Compass.NORTH_SMALL; // Animates in from slightly to the north and out same way.
     home.addImage( img );
-    // and other scenes
+    // add other scenes here
+    // ...
     sceneDirector.add( home );
     home.show();
     System.notifyOnRender(render);
