@@ -15,12 +15,13 @@ class TextWrapper extends Wrapper {
                         ,     color_:     Color
                         ,   size_:         Int
                         ,   ?spacing_:   Float = -1.
-                        ,   ?x_: Float = 0., ?y_: Float = 0., useImage: Bool = true ){
+                        ,   ?x_: Float = 0., ?y_: Float = 0., useImage_: Bool = true ){
         content = content_;
         font = font_;
         color = color_;
         size = size_;
         spacing = spacing_;
+        useImage = useImage_;
         var width_: Float;
         if( spacing == null ){
              width_ = font.width( size, content );
