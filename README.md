@@ -2,6 +2,7 @@
 Tool for simplifying Scene transitions in Kha, not yet added button support.
 dependancy 'tweenx'.
 
+You can use it like this:
 ```haxe
   function loadAll(){
   
@@ -30,4 +31,13 @@ dependancy 'tweenx'.
     g2.end();
   }
 
+```
+
+You can install it 
+```haxelib git kScenes https://github.com/nanjizal/kScenes.git```
+
+Then to your **khafile.js** just add
+``` js
+project.addLibrary('tweenx'); 
+project.addLibrary('kScenes');
 ```
