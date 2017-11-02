@@ -8,7 +8,7 @@ You can use it like this:
   
     // create a sceneDirector
     sceneDirector = new SceneDirector();
-    sceneDirector.enableKeyControl(); // allows you to use <- keys -> to navigate scenes 
+    sceneDirector.enableKeyControl(); // allows you to use <- keys -> to navigate scenes( fades between )
 
     // add Scenes
     var home = new Scene( 'home' );
