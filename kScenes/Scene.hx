@@ -86,7 +86,7 @@ class Scene {
         for( i in 0...l ){
             var img = texts[ i ];
             if( img != null ){
-                if( !img.useImage ) { 
+                if( !img.useImage || img.image == null ) { 
                     renderText( g2, img );
                 } else {
                     if( img.hasMatrix ) g2.transformation = img.matrix;

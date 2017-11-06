@@ -2,8 +2,9 @@ package kScenes;
 import kha.Font;
 import kha.Color;
 import kha.Image;
+import kha.graphics2.Graphics;
 class TextWrapper extends Wrapper {
-    public var content: String; // need to re r
+    public var content: String;
     public var font: Font;
     public var color: Color;
     public var size: Int;
@@ -43,7 +44,7 @@ class TextWrapper extends Wrapper {
         return textWrapper;
     }
     public function generateImage(){
-        image   = Image.createRenderTarget( Math.ceil( width ), Math.ceil( height ), null, null, 4 );
+        image    = Image.createRenderTarget( Math.ceil( width ), Math.ceil( height ), null, null, 4 );
         var g2  = image.g2;
         g2.begin();
         g2.clear(Color.fromValue(0x00000000));
@@ -72,5 +73,33 @@ class TextWrapper extends Wrapper {
             }
         }
         g2.end();
+        useImage = true;
     }
+    public function generateOnG2( g2: Graphics, ?dx: Float = 0., ?dy: Float = 0.){
+        g2.font     = font;
+        g2.fontSize = size;
+        g2.color    = color;
+        g2.opacity  = 1.0;
+        if( spacing == null ){
+            g2.drawString( content, dx, dy );
+        } else {
+            var spacing = spacing;
+            var size = size;
+            var letter: String;
+            var letterW: Float = 0.;
+            var dW = 0.;
+            var font = font;
+            for( i in 0...content.length ) {
+                letter = content.substr( i, 1 );
+                dW += letterW;
+                g2.drawString( letter, dW + dx, dy );
+                if( letter == ' ' ){
+                    letterW = font.width( size, letter );
+                } else {
+                    letterW = font.width( size, letter ) + spacing;
+                }
+            }
+        }
+    }
+    
 }
