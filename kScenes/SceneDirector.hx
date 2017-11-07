@@ -1,45 +1,26 @@
 package kScenes;
 import kha.graphics2.Graphics;
-import kha.input.Keyboard;
-import kha.input.Mouse;
-import kha.input.KeyCode;
+import kScenes.ArrowKeys;
+import kScenes.MouseHit;
 class SceneDirector{
     var sceneCount: Int = 0;
     var sceneTotal: Int;
+    var boolItem = false;
     var scenes: Array<Scene> = new Array<Scene>();
+    public var buttonPress: Scene->Int->Void;
+    public var buttonOver:  Scene->Int->Void;
     public function new(){
-
+        
     }
     public function enableKeyControl(){
-        Keyboard.get().notify( keyDown, keyUp );
+        var arrowKeys = new ArrowKeys();
+        arrowKeys.downLeft  = sceneBack;
+        arrowKeys.downRight = sceneForward;
     }
-    function keyDown(keyCode:Int):Void{
-        switch( keyCode ){
-            case KeyCode.Left:  
-                sceneBack();
-            case KeyCode.Right: 
-                sceneForward();
-            case KeyCode.Up:    
-                
-            case KeyCode.Down:  
-                
-            default: 
-                
-        }
-    }
-    function keyUp(keyCode:Int  ):Void{ 
-        switch( keyCode ){
-            case KeyCode.Left:  
-                
-            case KeyCode.Right: 
-                
-            case KeyCode.Up:    
-                
-            case KeyCode.Down:  
-                
-            default: 
-                
-        }
+    public function enableMouseInteraction(){
+        var mouseHit    = new MouseHit();
+        mouseHit.down   = mouseDown;
+        mouseHit.change = moveOver;
     }
     public function empty(){
         var scene = new Scene( 'Start' );
@@ -56,6 +37,39 @@ class SceneDirector{
     public function sceneBack(){
         changeScene( sceneCount - 1 );
     }
+    inline function mouseDown( x: Int, y: Int ){
+        var current = currentScene();
+        var id = current.checkHit( x, y );
+        if( id != -1 && buttonPress != null ) buttonPress( current, id );
+    }
+    inline function moveOver( x: Int, y: Int ){
+        var current = currentScene();
+        var id = current.checkHit( x, y );
+        if( id != -1 && buttonOver != null ) buttonOver( current, id );
+    }
+    public inline function currentScene(): Scene {
+        return scenes[ sceneCount ];
+    }
+    public function gotoSceneByName( str: String ){
+        var target = -1;
+        for( i in 0...scenes.length ){
+            if( scenes[ i ].sceneName == str ) {
+                target = i; 
+                break;
+            }
+        }
+        if( target != -1 ) changeScene( target );
+    }
+    public function gotoScene( scene: Scene ){
+        var target = -1;
+        for( i in 0...scenes.length ){
+            if( scenes[ i ] == scene ) {
+                target = i; 
+                break;
+            }
+        }
+        if( target != -1 ) changeScene( target );
+    }
     public function changeScene( i: Int ){
         if( i < 0 ){
             i = 0;
@@ -67,8 +81,7 @@ class SceneDirector{
         }
         if( i == sceneCount ) return;
         scenes[ i ].show( 0.15 );
-        //createLinkButton( i );
-        scenes[sceneCount].hide( 0. );
+        currentScene().hide( 0. );
         sceneCount = i;
     }
     public function render( g2: Graphics ){

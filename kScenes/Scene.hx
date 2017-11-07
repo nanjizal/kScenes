@@ -4,18 +4,75 @@ import kScenes.TextWrapper;
 import kha.graphics2.Graphics;
 import kha.math.*;
 import kha.Color;
+import kha.Image;
 class Scene {
-    var backRectangles:         Array<RectangleWrapper> = new Array<RectangleWrapper>();
-    var images:                 Array<ImageWrapper>     = new Array<ImageWrapper>();
-    var frontRectangles:         Array<RectangleWrapper> = new Array<RectangleWrapper>();
-    var texts:                     Array<TextWrapper>         = new Array<TextWrapper>();
+    var backRectangles:         Array<RectangleWrapper>     = new Array<RectangleWrapper>();
+    var images:                 Array<ImageWrapper>         = new Array<ImageWrapper>();
+    var frontRectangles:        Array<RectangleWrapper>     = new Array<RectangleWrapper>();
+    var texts:                  Array<TextWrapper>          = new Array<TextWrapper>();
+    var hitWraps:               Array<Wrapper>              = new Array<Wrapper>();
     var imageTotal:             Int = 0;
-    var textTotal:                 Int = 0;
+    var textTotal:              Int = 0;
     var backRectangleTotal:     Int = 0;
-    var frontRectangleTotal:     Int = 0;
-    var sceneName:                 String;
+    var frontRectangleTotal:    Int = 0;
+    public var sceneName:       String;
     public function new( sceneName_: String ){
         sceneName = sceneName_;
+    }
+    public function renderToImage(): Image {
+        var left      =  10000000.;
+        var top       =  10000000.;
+        var right     = -10000000.;
+        var bottom    = -10000000.;
+        for( rect in backRectangles ) {
+            var x0 = rect.ex;
+            var y0 = rect.ey;
+            var r0 = x0 + rect.width;
+            var b0 = y0 + rect.height;
+            if( x0 < left )     left = x0;
+            if( y0 < top )      top = y0;
+            if( r0 > right )    right = r0;
+            if( b0 > bottom )   bottom = b0;
+        }
+        for( img in images ) {
+            var x0 = img.ex;
+            var y0 = img.ey;
+            var r0 = x0 + img.width;
+            var b0 = y0 + img.height;
+            if( x0 < left )     left = x0;
+            if( y0 < top )      top = y0;
+            if( r0 > right )    right = r0;
+            if( b0 > bottom )   bottom = b0;
+        }
+        for( tx in texts ) {
+            var x0 = tx.ex;
+            var y0 = tx.ey;
+            var r0 = x0 + tx.width;
+            var b0 = y0 + tx.height;
+            if( x0 < left )     left = x0;
+            if( y0 < top )      top = y0;
+            if( r0 > right )    right = r0;
+            if( b0 > bottom )   bottom = b0;
+        }
+        for( rect in frontRectangles ){
+            var x0 = rect.ex;
+            var y0 = rect.ey;
+            var r0 = x0 + rect.width;
+            var b0 = y0 + rect.height;
+            if( x0 < left )     left = x0;
+            if( y0 < top )      top = y0;
+            if( r0 > right )    right = r0;
+            if( b0 > bottom )   bottom = b0;
+        }
+        var wid     = Math.ceil( right );
+        var hi      = Math.ceil( bottom ); 
+        var image_  = Image.createRenderTarget( Math.ceil( wid ), Math.ceil( hi ), null, null, 4 );
+        var g2      = image_.g2;
+        g2.begin();
+        g2.clear(Color.fromValue( 0x00000000 ));
+        render( g2 );
+        g2.end();
+        return image_;
     }
     public function addBackRectangle( item: RectangleWrapper ){
         backRectangles[ backRectangles.length ] = item;
@@ -33,6 +90,9 @@ class Scene {
         texts[ texts.length ] = item;
         textTotal++;
     }
+    public function addHit( item: Wrapper ){
+        hitWraps[ hitWraps.length ] = item;
+    }
     public function hide( ?delay: Float = 0. ){
         for( rect in backRectangles ) rect.hide( delay );
         for( img in images ) img.hide( delay );
@@ -45,6 +105,14 @@ class Scene {
         for( tx in texts ) tx.show( delay );
         for( rect in frontRectangles ) rect.show( delay );
     }
+    public function checkHit( x: Float, y: Float ): Int {
+        if( texts[ 0 ].alpha != 1. ) return -1; // need to rework tweens and use onFinish
+        for( i in 0...hitWraps.length ){ 
+            var item = hitWraps[ i ];
+            if( item.hitable ) if( item.hitTest( x, y ) ) return i;
+        }
+        return -1;
+    }
     public function render( g2: Graphics ){
         var l: Int;
         l = backRectangleTotal;
@@ -53,12 +121,19 @@ class Scene {
             if( rect != null ){
                 if( rect.hasMatrix ) g2.transformation = rect.matrix;
                 g2.opacity = rect.alpha;
-                g2.drawRect( rect.x, rect.y, rect.width, rect.height );
+                if( rect.colorFill != null ) {
+                    g2.color = rect.colorFill;
+                    g2.fillRect( rect.x, rect.y, rect.width, rect.height );
+                }
+                if( rect.colorLine != null ){
+                    g2.color = rect.colorLine;
+                    g2.drawRect( rect.x, rect.y, rect.width, rect.height, rect.strength );
+                }
                 g2.opacity = 1.;
                 if( rect.hasMatrix ) g2.transformation = FastMatrix3.identity();
             }
         }
-        
+        g2.color = Color.White;
         l = imageTotal;
         for( i in 0...l ){
             var img = images[ i ];
@@ -76,11 +151,19 @@ class Scene {
             if( rect != null ){
                 if( rect.hasMatrix ) g2.transformation = rect.matrix;
                 g2.opacity = rect.alpha;
-                g2.drawRect( rect.x, rect.y, rect.width, rect.height );
+                if( rect.colorFill != null ) {
+                    g2.color = rect.colorFill;
+                    g2.fillRect( rect.x, rect.y, rect.width, rect.height );
+                }
+                if( rect.colorLine != null ){
+                    g2.color = rect.colorLine;
+                    g2.drawRect( rect.x, rect.y, rect.width, rect.height, rect.strength );
+                }
                 g2.opacity = 1.;
                 if( rect.hasMatrix ) g2.transformation = FastMatrix3.identity();
             }
         }
+        g2.color = Color.White;
         // text pre-rendered you need to call text.generateImage(); if you change text.
         l = textTotal;
         for( i in 0...l ){

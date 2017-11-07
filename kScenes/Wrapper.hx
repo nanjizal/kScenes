@@ -1,7 +1,9 @@
 package kScenes;
 import tweenx909.TweenX;
 import tweenx909.EaseX;
+import kha.math.*;
 import kha.math.FastMatrix3;
+import kha.FastFloat;
 enum Compass {
     NORTH;
     WEST;
@@ -28,7 +30,7 @@ class Wrapper {
     public var height: Float;
     public var small: Float = 40.;
     public var offSide: Compass = CENTRE;
-    public var hitable: Bool;
+    public var hitable: Bool = false;
     public var matrix: FastMatrix3;
     public var hasMatrix: Bool = false;
     public function new( width_: Float, height_: Float, ?x_: Float = 0., ?y_: Float = 0. ){
@@ -109,7 +111,7 @@ class Wrapper {
             case NORTH_EAST_SMALL:
                 moveTo( ex + small, ey - small, delay );
             case CENTRE:
-
+            
         }
     }
     public function hitTest( x_: Float, y_: Float ){
