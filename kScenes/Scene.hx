@@ -106,6 +106,7 @@ class Scene {
         for( rect in frontRectangles ) rect.show( delay );
     }
     public function checkHit( x: Float, y: Float ): Int {
+        if( texts.length == 0 ) return -1;
         if( texts[ 0 ].alpha != 1. ) return -1; // need to rework tweens and use onFinish
         for( i in 0...hitWraps.length ){ 
             var item = hitWraps[ i ];
