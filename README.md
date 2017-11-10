@@ -41,15 +41,19 @@ Then to your **khafile.js** just add
 ``` js
 project.addLibrary('tweenx'); 
 project.addLibrary('kScenes');
-project.addLibrary('justTriangles');
+project.addLibrary('justTriangles');// for ImageShaderWrapper.
+project.addShaders('src/Shaders/**');
 ```
 
-## For drawing and masks..
+## For drawing and masks, gradients and custom shaders.
+now has ImageShaderWrapper work in progress but powerful as you can animate it same as other WrapperImages
 
-<img width="328" alt="maskcurve" src="https://user-images.githubusercontent.com/20134338/32640501-d83bed66-c5c0-11e7-898c-940f6ae2d026.png">
 <img width="325" alt="curve" src="https://user-images.githubusercontent.com/20134338/32640503-db519af0-c5c0-11e7-8f54-1ad87e4374ec.png">
+<img width="328" alt="maskcurve" src="https://user-images.githubusercontent.com/20134338/32640501-d83bed66-c5c0-11e7-898c-940f6ae2d026.png">
+<img width="203" alt="custom" src="https://user-images.githubusercontent.com/20134338/32640752-0ff80e14-c5c2-11e7-8120-66e7b3c80fee.png">
 
-This is the test scene I used, added a Shaders folder you need to drag into your source folder.
+
+This is the test scene I used, have added a Shaders folder you need to drag into your source folder, and need to add imports and quadTest_d svg string from justTriangles project.
 
 ``` haxe
 // minimal scene.
@@ -57,10 +61,10 @@ This is the test scene I used, added a Shaders folder you need to drag into your
 		var scene = new Scene( 'test' );
 		scene.addImage( new ImageWrapper( Assets.images.westCountryHome ));
 		var img: ImageShaderWrapper;
-		var testShaders: ShaderKind = ShaderKind.TEXTURED;
+		var testShaders: ShaderKind = ShaderKind.TEXTURED; // use to set the test
 		switch( testShaders ){
-		//simple gradient
 			case NONE:
+				//simple gradient
 				img = ImageShaderWrapper.fromDimensions( 500, 500 );
 				img.setShaders( kha.Shaders.quad_frag, kha.Shaders.quad_vert, true, ShaderKind.NONE, false );
 				img.justBackground();
@@ -71,7 +75,7 @@ This is the test scene I used, added a Shaders folder you need to drag into your
 				img.fromTriangles( 1, 1, 0.25, Triangle.triangles, rainbow );
 			case TEXTURED:
 				img = new ImageShaderWrapper( Assets.images.pubStairs, 70, 70 );
-				img.offSide = WEST;
+				img.offSide = WEST; // this will animate it in from the west when going into Scene.
 				drawQuadTest();
 				img.setShaders( kha.Shaders.texture_frag, kha.Shaders.texture_vert, false, ShaderKind.TEXTURED, true );
 				img.fromTriangles( 1, 1, 0.25, Triangle.triangles, rainbow );
