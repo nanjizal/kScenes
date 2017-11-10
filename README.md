@@ -90,15 +90,15 @@ This is the test scene I used, have added a Shaders folder you need to drag into
 		Draw.drawTri = Triangle.drawTri;
 		Triangle.triangles = new Array<Triangle>();
 		var thick = 30;
-        var ctx = new PathContext( 1, 500, 0, 0 );
-        ctx.setColor( 2, 2 );
-        ctx.setThickness( thick*5 );
-        ctx.lineType = TriangleJoinCurve; // - default
-        //var pathTrace = new PathContextTrace();
-        var p = new SvgPath( ctx );
+		var ctx = new PathContext( 1, 500, 0, 0 );
+		ctx.setColor( 2, 2 );
+		ctx.setThickness( thick*5 );
+		ctx.lineType = TriangleJoinCurve; // - default
+		//var pathTrace = new PathContextTrace();
+		var p = new SvgPath( ctx );
 		for( dy in 0...10 ){
-        	p.parse( quadtest_d, 1, 1 + dy * 250, 3, 3 ); // quadtest_d   is svg string see justTriangles examples.
+			p.parse( quadtest_d, 1, 1 + dy * 250, 3, 3 ); // quadtest_d   is svg string see justTriangles examples.
 		}
-        ctx.render( thick, false );
+		ctx.render( thick, false );
 	}
 ```
