@@ -2,8 +2,8 @@ package kScenes;
 import kha.Image;
 import kha.Color;
 class RectangleWrapper extends Wrapper {
-    public var colorLine: Color = null;
-    public var colorFill: Color = null;
+    public var colorLine: Color = 0;
+    public var colorFill: Color = 0;
     public var strength: Float = 0.;
     public function new( width_: Float, height_: Float, colorLine_: Color, colorFill_: Color, strength_: Float, ?x_: Float = 0., ?y_: Float = 0. ){
         colorLine = colorLine_;

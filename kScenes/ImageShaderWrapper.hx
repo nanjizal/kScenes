@@ -13,6 +13,7 @@ enum ShaderKind {
     NONE;
     COLOURED;
     TEXTURED;
+    GRADIENT;
 }
 class ImageShaderWrapper extends ImageWrapper {
     var pipe:       PipelineState;
@@ -110,6 +111,38 @@ class ImageShaderWrapper extends ImageWrapper {
                     colors.push( rgb.g );
                     colors.push( rgb.b );
                 }
+            case GRADIENT:
+                for( i in 0...colors.length ) colors.pop();
+                for( i in 0...triangles.length ){
+                    tri = triangles[ i ];
+                    vertices.push( s * tri.ax - offX );
+                    vertices.push( s * tri.ay - offY );
+                    //trace('pos' + Std.string( s * tri.ax - offX) + ' ' + Std.string( s * tri.ay - offY ) );
+                    vertices.push( -z );
+                    vertices.push( s * tri.bx - offX );
+                    vertices.push( s * tri.by - offY );
+                    //trace('pos' + Std.string( s * tri.bx - offX) + ' ' + Std.string( s * tri.by - offY ) );
+                    vertices.push( -z );
+                    vertices.push( s * tri.cx - offX );
+                    vertices.push( s * tri.cy - offY );
+                    //trace('pos' + Std.string( s * tri.cx - offX) + ' ' + Std.string( s * tri.cy - offY ) );
+                    vertices.push( -z );
+                    var rgb = toRGBs( colorPallet[ tri.colorA ] );
+                    //trace( 'color A ' + rgb );
+                    colors.push( rgb.r );
+                    colors.push( rgb.g );
+                    colors.push( rgb.b );
+                    rgb = toRGBs( colorPallet[ tri.colorB ] );
+                    //trace( 'color B ' + rgb );
+                    colors.push( rgb.r );
+                    colors.push( rgb.g );
+                    colors.push( rgb.b );
+                    rgb = toRGBs( colorPallet[ tri.colorC ] );
+                    //trace( 'color C ' + rgb );
+                    colors.push( rgb.r );
+                    colors.push( rgb.g );
+                    colors.push( rgb.b );
+                }
             case TEXTURED:
                 for( i in 0...uvs.length ) uvs.pop();
                 for( i in 0...triangles.length ){
@@ -157,7 +190,7 @@ class ImageShaderWrapper extends ImageWrapper {
         // Copy vertices and colors to vertex buffer
         var structureLength: Int = 0;
         switch( shaderKind ){
-            case COLOURED:
+            case COLOURED | GRADIENT:
                 structureLength = 6;
             case TEXTURED:
                 structureLength = 5;
@@ -170,7 +203,7 @@ class ImageShaderWrapper extends ImageWrapper {
             vbData.set( i * structureLength + 1, vertices[ i * 3 + 1 ] );
             vbData.set( i * structureLength + 2, vertices[ i * 3 + 2 ] );
             switch( shaderKind ){
-                case COLOURED:
+                case COLOURED | GRADIENT:
                     vbData.set( i * structureLength + 3, colors[ i * 3 ] );
                     vbData.set( i * structureLength + 4, colors[ i * 3 + 1 ] );
                     vbData.set( i * structureLength + 5, colors[ i * 3 + 2 ] );
@@ -202,7 +235,7 @@ class ImageShaderWrapper extends ImageWrapper {
         shaderKind  = shaderKind_;
         structure   = new VertexStructure();
         switch( shaderKind ){
-            case COLOURED:
+            case COLOURED | GRADIENT:
                 structure.add( "pos", VertexData.Float3 );
                 structure.add( "col", VertexData.Float3 );
             case NONE:
