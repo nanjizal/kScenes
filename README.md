@@ -75,6 +75,17 @@ This is the test scene I used, have added a Shaders folder you need to drag into
 				drawQuadTest();	
 				img.setShaders( kha.Shaders.color_frag, kha.Shaders.color_vert, false, ShaderKind.COLOURED, true );
 				img.fromTriangles( 1, 1, 0.25, Triangle.triangles, rainbow );
+			case GRADIENT:
+				var gradImg = ImageShaderWrapper.fromDimensions( 400, 400 );
+				gradientTest();
+				gradImg.setShaders( kha.Shaders.color_frag, kha.Shaders.color_vert, false, ShaderKind.GRADIENT, true );
+				gradImg.fromTriangles( 0, 0, 1, Triangle.triangles, rainbow );
+				// use gradient as texture for shape
+				img = new ImageShaderWrapper( gradImg.image, 100, 100 );
+				img.offSide = WEST;
+				drawQuadTest();
+				img.setShaders( kha.Shaders.texture_frag, kha.Shaders.texture_vert, false, ShaderKind.TEXTURED, true );
+				img.fromTriangles( 1, 1, 0.25, Triangle.triangles, rainbow );
 			case TEXTURED:
 				img = new ImageShaderWrapper( Assets.images.pubStairs, 70, 70 );
 				img.offSide = WEST; // this will animate it in from the west when going into Scene.
@@ -85,6 +96,11 @@ This is the test scene I used, have added a Shaders folder you need to drag into
 		scene.addImage( img );
 		add( scene );
 		return scene;
+	}
+	function gradientTest(){
+		Draw.drawTri = Triangle.drawTri;
+		Triangle.triangles = new Array<Triangle>();
+		TriangleGradient.multiGradient( 0, true, 0, -1, 1, 2, [ 1,2,3,4,5,6,7], 0., 0., 0. );
 	}
 	function drawQuadTest(){
 		Draw.drawTri = Triangle.drawTri;
