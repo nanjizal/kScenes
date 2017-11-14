@@ -53,7 +53,7 @@ Using this technique to add shader generated Image content over the background i
 <img width="325" alt="curve" src="https://user-images.githubusercontent.com/20134338/32640503-db519af0-c5c0-11e7-8f54-1ad87e4374ec.png">
 <img width="328" alt="maskcurve" src="https://user-images.githubusercontent.com/20134338/32640501-d83bed66-c5c0-11e7-898c-940f6ae2d026.png">
 <img width="203" alt="custom" src="https://user-images.githubusercontent.com/20134338/32640752-0ff80e14-c5c2-11e7-8120-66e7b3c80fee.png">
-
+<img width="271" alt="gradientcurves" src="https://user-images.githubusercontent.com/20134338/32776778-91f4fd34-c92b-11e7-906f-f196ddc84904.png">
 
 This is the test scene I used, have added a Shaders folder you need to drag into your source folder, and need to add imports and quadTest_d svg string from justTriangles project.
 
