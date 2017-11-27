@@ -1,8 +1,9 @@
-package kScenes;
+package kScenes.story;
 import kha.graphics2.Graphics;
-import kScenes.ArrowKeys;
-import kScenes.MouseHit;
-class SceneDirector{
+import kha.Framebuffer;
+import kha.Canvas;
+import kScenes.interaction.*;
+class Director{
     var sceneCount: Int = 0;
     var sceneTotal: Int;
     var boolItem = false;
@@ -84,9 +85,9 @@ class SceneDirector{
         currentScene().hide( 0. );
         sceneCount = i;
     }
-    public function render( g2: Graphics ){
+    public function render( canvas: Canvas ){
         for( scene in scenes ){
-            scene.render( g2 );
+            scene.render( canvas );
         }
     }
 }

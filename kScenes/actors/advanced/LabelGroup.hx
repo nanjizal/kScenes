@@ -1,10 +1,9 @@
-package kScenes;
-import kha.Image;
-import kha.Color;
-import kScenes.ImageWrapper;
-class MultiTextImage extends ImageWrapper{
-    var arrTx: Array<TextWrapper>;
-    public function new( arrTx_: Array<TextWrapper> ){
+package kScenes.actors.advanced;
+import kha.*;
+import kScenes.actors.*;
+class LabelGroup extends Picture{
+    var arrTx: Array<Label>;
+    public function new( arrTx_: Array<Label> ){
         arrTx = arrTx_;
         // calculate image size
         var left      =  10000000.;

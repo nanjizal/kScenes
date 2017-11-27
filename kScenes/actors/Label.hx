@@ -1,28 +1,43 @@
-package kScenes;
+package kScenes.actors;
 import kha.Font;
 import kha.Color;
 import kha.Image;
 import kha.graphics2.Graphics;
-class TextWrapper extends Wrapper {
-    public var content: String;
-    public var font: Font;
-    public var color: Color;
-    public var size: Int;
-    public var spacing: Float;
-    public var image: Image;
+
+@:structInit
+class LabelProp {
+    var str: String;
+    var font: Font;
+    var color: Color;
+    var size: Int;
+    @:optional var spacing = -1.;
+    var useImage: Bool;
+    @:optional var x: Float = 0.;
+    @:optional var y: Float = 0.;
+}
+
+class Label extends Actor {
+    public var content:  String;
+    public var font:     Font;
+    public var color:    Color;
+    public var size:     Int;
+    public var spacing:  Float;
+    public var image:    Image;
     public var useImage: Bool;
-    public function new(     content_:     String
-                        ,     font_:         Font
-                        ,     color_:     Color
-                        ,   size_:         Int
-                        ,   ?spacing_:   Float = -1.
-                        ,   ?x_: Float = 0., ?y_: Float = 0., useImage_: Bool = true ){
-        content = content_;
-        font = font_;
-        color = color_;
-        size = size_;
-        spacing = spacing_;
-        useImage = useImage_;
+    public function new(    content_:       String
+                        ,   font_:          Font
+                        ,   color_:         Color
+                        ,   size_:          Int
+                        ,   ?spacing_:      Float = -1.
+                        ,   ?x_:            Float = 0.,     ?y_: Float = 0.
+                        ,   useImage_:      Bool = true ){
+        content     = content_;
+        font        = font_;
+        color       = color_;
+        size        = size_;
+        spacing     = spacing_;
+        useImage    = useImage_;
+        
         var width_: Float;
         if( spacing == null ){
              width_ = font.width( size, content );
@@ -38,16 +53,11 @@ class TextWrapper extends Wrapper {
         super( width_, height_, x_, y_ );
         if( useImage ) generateImage();
     }
-    public function clone(): TextWrapper {
-        var textWrapper = new TextWrapper( content, font, color, size, x, y );
-        textWrapper.alpha = alpha;
-        return textWrapper;
-    }
     public function generateImage(){
         image    = Image.createRenderTarget( Math.ceil( width ), Math.ceil( height ), null, null, 4 );
         var g2  = image.g2;
         g2.begin();
-        g2.clear(Color.fromValue(0x00000000));
+        g2.clear( Color.fromValue( 0x00000000 ) );
         g2.font     = font;
         g2.fontSize = size;
         g2.color    = color;
@@ -75,7 +85,7 @@ class TextWrapper extends Wrapper {
         g2.end();
         useImage = true;
     }
-    public function generateOnG2( g2: Graphics, ?dx: Float = 0., ?dy: Float = 0.){
+    public function generateOnG2( g2: Graphics, ?dx: Float = 0., ?dy: Float = 0. ){
         g2.font     = font;
         g2.fontSize = size;
         g2.color    = color;

@@ -6,7 +6,7 @@
   "tags": ["kha"],
   "description":
       "Tool for simplifying Scene transitions in Kha.",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "contributors": ["Nanjizal"],
   "dependencies": {
       "tweenx":""

@@ -1,16 +1,17 @@
-package kScenes;
-import kScenes.ImageWrapper;
-import kScenes.TextWrapper;
+package kScenes.story;
+import kScenes.actors.*;
 import kha.graphics2.Graphics;
+import kha.Framebuffer;
+import kha.Canvas;
 import kha.math.*;
 import kha.Color;
 import kha.Image;
 class Scene {
-    var backRectangles:         Array<RectangleWrapper>     = new Array<RectangleWrapper>();
-    var images:                 Array<ImageWrapper>         = new Array<ImageWrapper>();
-    var frontRectangles:        Array<RectangleWrapper>     = new Array<RectangleWrapper>();
-    var texts:                  Array<TextWrapper>          = new Array<TextWrapper>();
-    var hitWraps:               Array<Wrapper>              = new Array<Wrapper>();
+    var backRectangles:         Array<Rectangle>     = new Array<Rectangle>();
+    var images:                 Array<Picture>       = new Array<Picture>();
+    var frontRectangles:        Array<Rectangle>     = new Array<Rectangle>();
+    var texts:                  Array<Label>         = new Array<Label>();
+    public var hitWraps:        Array<Actor>         = new Array<Actor>();
     var imageTotal:             Int = 0;
     var textTotal:              Int = 0;
     var backRectangleTotal:     Int = 0;
@@ -70,27 +71,27 @@ class Scene {
         var g2      = image_.g2;
         g2.begin();
         g2.clear(Color.fromValue( 0x00000000 ));
-        render( g2 );
+        render( image_ );
         g2.end();
         return image_;
     }
-    public function addBackRectangle( item: RectangleWrapper ){
+    public function addBackRectangle( item: Rectangle ){
         backRectangles[ backRectangles.length ] = item;
         backRectangleTotal++;
     }
-    public function addImage( item: ImageWrapper ){
+    public function addImage( item: Picture ){
         images[ images.length ] = item;
         imageTotal++;
     }
-    public function addFrontRectangle( item: RectangleWrapper ){
+    public function addFrontRectangle( item: Rectangle ){
         frontRectangles[ frontRectangles.length ] = item;
         frontRectangleTotal++;
     }
-    public function addText( item: TextWrapper ){
+    public function addText( item: Label ){
         texts[ texts.length ] = item;
         textTotal++;
     }
-    public function addHit( item: Wrapper ){
+    public function addHit( item: Actor ){
         hitWraps[ hitWraps.length ] = item;
     }
     public function hide( ?delay: Float = 0. ){
@@ -114,7 +115,8 @@ class Scene {
         }
         return -1;
     }
-    public function render( g2: Graphics ){
+    public function render( canvas: Canvas){
+        var g2 = canvas.g2;
         var l: Int;
         l = backRectangleTotal;
         for( i in 0...l ){
@@ -143,7 +145,7 @@ class Scene {
                 g2.opacity = img.alpha;
                 g2.drawImage( img.image, img.x, img.y );
                 g2.opacity = 1.;
-                if( img.hasMatrix ) g2.transformation = FastMatrix3.identity();
+                if( img.hasMatrix ) g2.transformation = img.matrix;
             }
         }
         l = frontRectangleTotal;
@@ -161,7 +163,7 @@ class Scene {
                     g2.drawRect( rect.x, rect.y, rect.width, rect.height, rect.strength );
                 }
                 g2.opacity = 1.;
-                if( rect.hasMatrix ) g2.transformation = FastMatrix3.identity();
+                if( rect.hasMatrix ) g2.transformation = rect.matrix;
             }
         }
         g2.color = Color.White;
@@ -183,7 +185,7 @@ class Scene {
         }
         g2.color = Color.White;
     }
-    function renderText( g2: Graphics, tx: TextWrapper ){
+    function renderText( g2: Graphics, tx: Label ){
         if( tx != null ){
             if( tx.hasMatrix ){
                 g2.transformation = tx.matrix;

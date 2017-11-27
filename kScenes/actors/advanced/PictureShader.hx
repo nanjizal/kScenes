@@ -1,9 +1,5 @@
-package kScenes;
-import kha.Framebuffer;
-import kha.Scheduler;
-import kha.System;
-import kha.Image;
-import kha.Color;
+package kScenes.actors.advanced;
+import kha.*;
 import kha.math.*;
 import kha.graphics4.*;
 import justTriangles.Triangle;
@@ -15,7 +11,8 @@ enum ShaderKind {
     TEXTURED;
     GRADIENT;
 }
-class ImageShaderWrapper extends ImageWrapper {
+// Still in development not yet decided on final form
+class PictureShader extends Picture {
     var pipe:       PipelineState;
     var vb:         VertexBuffer;
     var ib:         IndexBuffer;
@@ -25,8 +22,8 @@ class ImageShaderWrapper extends ImageWrapper {
     var structure:  VertexStructure;
     var mvp:        FastMatrix4;
     var model:      FastMatrix4;
-    var projection: FastMatrix4;
-    var view:       FastMatrix4;
+    public var projection: FastMatrix4;
+    public var view:       FastMatrix4;
     var hasShaders: Bool = false;
     var hasTime:    Bool = false;
     var shaderKind: ShaderKind;
@@ -34,13 +31,14 @@ class ImageShaderWrapper extends ImageWrapper {
     var vertices:   Array<Float> = [];
     var colors:     Array<Float> = [];
     var uvs:        Array<Float> = [];
-    var z: Float = 1;
+    public var z: Float = 1;
     public function new( image_, ?x_: Float = 0., ?y_: Float = 0. ){
         super( image_, x_, y_ );
     }
-    public static function fromDimensions( width: Float, height: Float, ?x_: Float = 0., ?y_: Float = 0. ): ImageShaderWrapper {
+    public static function fromDimensions( width:   Float,      height: Float
+                                         , ?x_:     Float = 0., ?y_:    Float = 0. ): PictureShader {
         var image_ = Image.createRenderTarget( Math.ceil( width ), Math.ceil( height ), TextureFormat.RGBA32, DepthStencilFormat.DepthOnly, 4 );
-        return new ImageShaderWrapper( image_, x_, y_ );
+        return new PictureShader( image_, x_, y_ );
     }
     public function render( ?time: Float, ?framebuffer_: Framebuffer ): Void { // pass framebuffer if you want to render on main
         if( !hasShaders ) return;
@@ -48,7 +46,16 @@ class ImageShaderWrapper extends ImageWrapper {
         var g = ( framebuffer_ == null )?image.g4: framebuffer_.g4;
         var currImage = image;
         if( shaderKind == TEXTURED ) {
-            image = Image.createRenderTarget( Math.ceil( width ), Math.ceil( height ), TextureFormat.RGBA32, DepthStencilFormat.DepthOnly, 4 );
+            var w: Int = 0;
+            var h: Int = 0;
+            if( framebuffer_ != null ) { 
+                w = Math.ceil( framebuffer_.width );
+                h = Math.ceil( framebuffer_.height );
+            } else {
+                w = Math.ceil( width );
+                h = Math.ceil( height );
+            }
+            image = Image.createRenderTarget( w, h, TextureFormat.RGBA32, DepthStencilFormat.DepthOnly, 4 );
             g = image.g4;
         }
         g.begin();
@@ -58,7 +65,9 @@ class ImageShaderWrapper extends ImageWrapper {
         g.setVertexBuffer( vb );
         g.setIndexBuffer(  ib );
         if( framebuffer_ == null && hasMVP ) setModel( FastMatrix4.identity().multmat( FastMatrix4.translation( x, y, 0 ) ) );
-        if( hasMVP ) g.setMatrix( mvpID, FastMatrix4.identity() );//mvp );
+        if( hasMVP ) {
+            g.setMatrix( mvpID, mvp );//FastMatrix4.identity() );//
+        }
         if( shaderKind == TEXTURED ) {
             g.setTexture( textureID, currImage );// Set texture
             currImage = null;
@@ -267,7 +276,7 @@ class ImageShaderWrapper extends ImageWrapper {
     }
     public function initProjection(){
         // Projection matrix: 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
-        projection = FastMatrix4.perspectiveProjection( 45.0, 16.0 / 9.0, 0.1, 100.0 );
+        projection = FastMatrix4.perspectiveProjection( 45.0, 4.0 / 3.0, 0.1, 100.0);//45.0, 16.0 / 9.0, 0.1, 100.0 );
         // Or, for an ortho camera
         //var projection = FastMatrix4.orthogonalProjection(-10.0, 10.0, -10.0, 10.0, 0.0, 100.0); // In world coordinates
         
@@ -285,6 +294,7 @@ class ImageShaderWrapper extends ImageWrapper {
     }
     public function setModel( model_: FastMatrix4 ){
         model = model_;
+        hasMVP = true;
         setMPV();
     }
     public function setMPV(){
